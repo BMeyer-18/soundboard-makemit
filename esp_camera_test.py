@@ -1,6 +1,7 @@
 import cv2
 
-url = "http://10.42.0.124/"
+#url = "http://Nook Rats:NookRats!@10.42.0.124"
+url = 0
 cap = cv2.VideoCapture(url)
 print('starting capture')
 while True:

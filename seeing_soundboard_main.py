@@ -27,12 +27,12 @@ def train(args):
     trainer = TrainModel(args.data_path, args.model_path)
     trainer.load_data(0.8)
     trainer.train_model()
-    loss, acc = trainer.evaluate_performance
+    loss, acc = trainer.evaluate_performance()
     print(f"accuracy: {acc}, loss: {loss}")
 
 def use(args):
-    classifier = GestureClassifier(args.model_path, 0.8)
-    classifier.classify_live_footage(15)
+    classifier = GestureClassifier(args.model_path, 0.3)
+    classifier.classify_live_footage(30)
     print("done")
 
 if __name__ == "__main__":
