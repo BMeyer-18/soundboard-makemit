@@ -1,0 +1,9 @@
+# Install on Raspberry Pi for running the gesture recognizer
+# Usage: pip install -r requirements-pi.txt
+# Note: Also requires VLC installed via apt:
+#   sudo apt install vlc
+
+mediapipe
+opencv-python-headless
+numpy
+python-vlc
