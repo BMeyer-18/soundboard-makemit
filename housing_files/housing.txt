@@ -1,0 +1,1 @@
+This directory aims to contain 3D printable files to create a housing shell for the Visual Soundbox.
