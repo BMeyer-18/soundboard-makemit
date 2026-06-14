@@ -1,10 +1,11 @@
 argparse==1.4.0
 matplotlib==3.11.0
-mediapipe==0.10.21
+mediapipe==0.10.31
 mediapipe_model_maker==0.2.1.4
 opencv_contrib_python==4.11.0.86
 opencv_python==4.11.0.86
 opencv_python_headless==4.11.0.86
 python_vlc==3.0.21203
-python==3.10.13
 tensorflow==2.15.1
+
+#python==3.10.13
