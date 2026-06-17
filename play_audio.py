@@ -11,11 +11,12 @@ class PlayAudio:
         # the path to the sound effect that gesture corresponds to, and
         # the second element is the approximate length of the sound
         # effect in seconds (often rounded up).
-        self.happy = ("sound_files/thumb_up_yippee.mp3", 3)
-        self.sad = ("sound_files/thumb_down_downer_noise.mp3", 5)
-        self.peace = ("sound_files/victory_sign_mario_kart_win.mp3", 6)
+        self.happy = ("sound_files/thumb_up_yippee.mp3", 2)
+        self.sad = ("sound_files/thumb_down_downer_noise.mp3", 4)
+        self.peace = ("sound_files/victory_sign_mario_kart_win.mp3", 5)
         self.okay = ("sound_files/duck_mac-quack.mp3", 2)
-        self.mad = ("sound_files/duck_quack_reverb.mp3", 4)
+        self.mad = ("sound_files/duck_quack_reverb.mp3", 3)
+        self.love = ("sound_files/i-love-you.mp3", 2)
 
     def play_sound(self, emotion):
         # INSTRUCTIONS (part 2):
@@ -36,7 +37,8 @@ class PlayAudio:
                 sound = self.okay
             case "fist":
                 sound = self.mad
-
+            case "love":
+                sound = self.love
         # You shouldn't need to modify this code. Enjoy!
         player = MediaPlayer(sound[0])
         player.play()

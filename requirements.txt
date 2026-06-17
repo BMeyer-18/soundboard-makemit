@@ -1,3 +1,7 @@
+# Requirements for the Visual Soundboard application.
+# The installation will be done using pip in a virtual environment like conda. 
+# The virtual environment should be using python 3.10.13 to 3.11 to ensure compatibility.
+
 argparse==1.4.0
 matplotlib>=3.10.0
 mediapipe==0.10.31
@@ -6,6 +10,4 @@ opencv_contrib_python==4.11.0.86
 opencv_python==4.11.0.86
 opencv_python_headless==4.11.0.86
 python_vlc==3.0.21203
-tensorflow==2.15.1
-
-#python==3.10.13
+tensorflow>=2.15.0
