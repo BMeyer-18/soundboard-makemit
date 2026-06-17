@@ -5,11 +5,11 @@ Importing necessary modules:
 - time: used to track the duration of the video capture
 """
 
+from play_audio import PlayAudio
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 import cv2
-from play_audio import PlayAudio
 import time
 
 class GestureClassifier():
@@ -24,16 +24,6 @@ class GestureClassifier():
         self.VisionRunningMode = mp.tasks.vision.RunningMode
         
     def classify_image(self, cam, recognizer):
-        NAME_MAP = {
-            "Thumb_Up":    "thumbs_up",
-            "Thumb_Down":  "thumbs_down",
-            "Victory":     "peace",
-            "Closed_Fist": "fist",
-            "ILoveYou":   "iluvyou",   # swap for now
-        }
-        category = NAME_MAP.get(classification[0][0].category_name)
-        if category:
-            player.play_sound(category)
         player = PlayAudio()
         ret, frame = cam.read()
         if ret:
