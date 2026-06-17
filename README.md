@@ -1,12 +1,16 @@
 # Hand Gesture Soundboard  
-## Overview  
+
+## Overview
+
 This was a project for the 2025 MakeMIT Hackathon that converts hand gestures into sounds. This code allows you to train and use your own model, as long as you have a dataset of images to train the model on. THis uses MediaPipe Model Maker, which requires some outdated versions of Python libraries all listed in `requirements.txt`.  
 
 ## Data Setup  
+
 To train the model, Mediapipe Model Maker requires you to set up your training directory in a specific way. You don't need to create a test/train/val split - that's done for you. All you need to do is create one folder for each of your hand gesture categories, and fill each folder with pictures of that hand gesture in use. You can include as few or as many as you want, but your data directory must only contain folders, each of which contains images of a specific hand gesture.  
 To change the sounds that play, you'll need to change some code in `play_audio.py`. The detailed instructions along with a functional example can all be found there, but as a brief overview: You'll need to pair the name of each hand gesture with the directory of the corresponding sound effect, as well as its approximate length in seconds.
   
 ## Commands  
+
 The argparser Python library is used to allow all your work training and using the model to be done in the terminal, with the exception of changing the sounds in `play_audio.py`. This has only been tested on Ubuntu so far.  
 The following are the two commands you should need to use. All text in [square brackets] will need to be replaced with a directory.  
   

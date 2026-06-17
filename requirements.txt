@@ -1,5 +1,5 @@
 argparse==1.4.0
-matplotlib==3.11.0
+matplotlib>=3.10.0
 mediapipe==0.10.31
 mediapipe_model_maker==0.2.1.4
 opencv_contrib_python==4.11.0.86
