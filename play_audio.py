@@ -15,6 +15,7 @@ class PlayAudio:
         # the path to the sound effect that gesture corresponds to, and
         # the second element is the approximate length of the sound
         # effect in seconds (often rounded up).
+        self.none = ("sound_files/nothing-soundbite.mp3", 1)
         self.happy = ("sound_files/thumb_up_yippee.mp3", 2)
         self.sad = ("sound_files/thumb_down_downer_noise.mp3", 4)
         self.peace = ("sound_files/victory_sign_mario_kart_win.mp3", 5)
@@ -43,6 +44,8 @@ class PlayAudio:
                 sound = self.mad
             case "love":
                 sound = self.love
+            case "none":
+                sound = self.none
         # You shouldn't need to modify this code. Enjoy!
         player = MediaPlayer(sound[0])
         player.play()
