@@ -33,7 +33,7 @@ The following are the two commands you should need to use. All text in [square b
 To train the model, use this command:
 ```python seeing_soundboard_main.py -t -d [data directory] -m [model directory]```
 
-> If you decide to train your own model, make sure to delete all the files in the 'training_files' folder to avoid redundancy. [model directory] is the directory where trained model will be saved and where you will have access to the 'gesture_recognizer.task' file to test out your model.
+> If you decide to train your own model, make sure to delete all the files in the 'model' folder to avoid redundancy. [model directory] is the directory where trained model will be saved and where you will have access to the 'gesture_recognizer.task' file to test out your model.
 
 To use your trained model, use this command:
 ```python seeing_soundboard_main.py -u -m training_files/model/gesture_recognizer.task (or wherever the .task file you created is)```
