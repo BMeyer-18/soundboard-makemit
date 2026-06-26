@@ -4,7 +4,7 @@
 
 This was a project for the 2025 MakeMIT Hackathon that converts hand gestures into sounds. This code allows you to train and use your own model, as long as you have a dataset of images to train the model on. This uses MediaPipe Model Maker, which requires some outdated versions of Python libraries all listed in `requirements.txt`.
 
-### Data Setup
+## Data Setup
 
 > If you don't want to gather a dataset of your own, you can skip the data setup and follow along using the files in the 'model_files' folder to get started. The recognized hand gestures are thumbs up, thumbs down, fist, peace sign, ok sign, and the 'I love you' sign for ASL.
 
@@ -33,10 +33,10 @@ The following are the two commands you should need to use. All text in [square b
 To train the model, use this command:
 ```python seeing_soundboard_main.py -t -d [data directory] -m [model directory]```
 
-> If you decide to train your own model, make sure to delete all the files in the 'model_files' folder to avoid redundancy. [model directory] is the directory where trained model will be saved and where you will have access to the 'gesture_recognizer.task' file to test out your model.
+> If you decide to train your own model, make sure to delete all the files in the 'training_files' folder to avoid redundancy. [model directory] is the directory where trained model will be saved and where you will have access to the 'gesture_recognizer.task' file to test out your model.
 
 To use your trained model, use this command:
-```python seeing_soundboard_main.py --use -m model_files/gesture_recognizer.task (or wherever the .task file you created is)```
+```python seeing_soundboard_main.py -u -m training_files/model/gesture_recognizer.task (or wherever the .task file you created is)```
 
 ### Common Issues
 
@@ -59,15 +59,15 @@ For 'mediapipe.task.cc', try downgrading to an earlier version of mediapipe:
     pip uninstall mediapipe mediapipe-model-maker -y
     pip install mediapipe==0.10.11 mediapipe-model-maker==0.2.1.4
 
-## Hardware and Setup
+## Hardware Setup
 
-This section will provide all the neccessary information to run the model on the Rasperry Pi
+This section will provide all the neccessary information to run the model on a Rasperry Pi.
 
 ### Parts List
 
 A prototype can be completed using the following:
 
-- [Rapberry Pi 3 Model B](https://www.raspberrypi.com/products/raspberry-pi-3-model-b/): This single-board computer acted as the host of the programs' insterface. Later raspberry pi models from the 4th and 5th generations and beyond should also have no problem running these files with improved performance.
+- [Rapberry Pi 3 Model B](https://www.raspberrypi.com/products/raspberry-pi-3-model-b/): You will also need to run a 64-bit OS in order to use mediapipe. Later raspberry pi models from the 4th and 5th generations and beyond should also have no problem running these files with improved performance.
 
 - [Raspberry Pi Camera Module 3](https://www.raspberrypi.com/products/camera-module-3/): This camera was chosen for its quality and compatibility with the Raspberry Pi. However, any camera module compatible with a raspberry pi or intergrated using other microcontrollers should work as well.
 
@@ -75,4 +75,4 @@ A prototype can be completed using the following:
 
 - You will also need a housing or case for your raspberry pi that can accomodate for the camera and speakers. In the 'housing_files' folder, you'll find 3D printable files that will allow you make one of on your own.
 
-### Instalation
+### Installation
