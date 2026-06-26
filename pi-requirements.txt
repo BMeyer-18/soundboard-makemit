@@ -1,0 +1,7 @@
+# Only install dependencies for the Raspberry Pi
+numpy
+opencv-python
+mediapipe
+python-vlc
+picamera2
+setuptools==69.5.1
