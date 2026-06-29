@@ -5,6 +5,8 @@ Importing necessary modules:
 - picamera2 (Pi) or cv2 (dev machine): camera capture, chosen automatically based on what's available
 """
 
+from unittest import result
+
 from play_audio import PlayAudio
 import mediapipe as mp
 from mediapipe.tasks import python
@@ -68,6 +70,8 @@ class GestureClassifier():
             print(classification[0][0].category_name)
             print(classification[0][0].score)
             player.play_sound(classification[0][0].category_name)
+            return classification[0][0].category_name
+        return None
 
     def classify_live_footage(self, duration):
         options = self.gesture_recognizer_options(
@@ -75,6 +79,7 @@ class GestureClassifier():
             running_mode=self.vision_running_mode.IMAGE,
             min_hand_detection_confidence=self.min_confidence,
             min_hand_presence_confidence=self.min_confidence)
+        last_gesture = None
         with self.gesture_recognizer.create_from_options(options) as recognizer:
             cam = self.setup_camera()
 
@@ -82,5 +87,8 @@ class GestureClassifier():
             print("beginning video capture")
             start_time = time.time()
             while time.time() - start_time < duration:
-                self.classify_image(cam, recognizer)
+                result = self.classify_image(cam, recognizer)
+                if result != None:
+                    last_gesture = result
             self.release_camera(cam)
+        return last_gesture

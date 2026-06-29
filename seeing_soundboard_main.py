@@ -1,4 +1,6 @@
 import argparse
+import sys
+from play_audio import PlayAudio
 from training_files.gesture_classification import GestureClassifier
 
 def main():
@@ -23,18 +25,29 @@ def get_args():
 
 # Training class for gesture recognition
 def train(args):
-    from model_files.train_model import TrainModel
+    from training_files.train_model import TrainModel
     trainer = TrainModel(args.data_path, args.model_path)
     trainer.load_data(0.8)
     trainer.train_model()
     loss, acc = trainer.evaluate_performance()
     print(f"accuracy: {acc}, loss: {loss}")
 
-# Usage class for gesture recognition
+# Usage class for gesture recognition. Restarts the capture window if no gesture is detected.
 def use(args):
     classifier = GestureClassifier(args.model_path, 0.3)
-    classifier.classify_live_footage(30)
-    print("done")
+
+    while True:
+        last_gesture = classifier.classify_live_footage(2)
+        if last_gesture is None:
+            print("Camera/frame error during capture window, retrying...")
+            continue
+        elif last_gesture == "none":
+            print("No hand gesture detected. Shutting down.")
+            sys.exit(0)
+            # Does't work as intended
+        else:
+            print(f"Detected gesture: {last_gesture}")
+        
 
 if __name__ == "__main__":
     main()
