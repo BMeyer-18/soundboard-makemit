@@ -1,4 +1,4 @@
-# MakeMIT-Visual-Soundboard
+# MakeMIT-Visual-Soundboard (In Progress)
 
 ## Overview
 
@@ -6,7 +6,7 @@ This was a project for the 2025 MakeMIT Hackathon that converts hand gestures in
 
 ## Data Setup
 
-> If you don't want to gather a dataset of your own, you can skip the data setup and follow along using the files in the 'model_files' folder to get started. The recognized hand gestures are thumbs up, thumbs down, fist, peace sign, ok sign, and the 'I love you' sign for ASL.
+> If you don't want to gather a dataset of your own, you can skip the data setup and follow along using the files in the 'model_files' folder to get started. The recognized hand gestures are thumbs up, thumbs down, fist, peace sign, ok sign, and the ASL 'I love you' sign.
 
 To train the model, Mediapipe Model Maker requires you to set up your training directory in a specific way. You don't need to create a test/train/val split - that's done for you. All you need to do is create one folder for each of your hand gesture categories, and fill each folder with pictures of that hand gesture in use. You can include as few or as many as you want, but your data directory must only contain folders, each of which contains images of a specific hand gesture.
 
@@ -28,8 +28,8 @@ To change the sounds that play, you'll need to change some code in `play_audio.p
 
 The argparser Python library is used to allow all your work training and using the model to be done in the terminal, with the exception of changing the sounds in `play_audio.py`. So far, this has been tested in Ubuntu.
 
-The following are the two commands you should need to use. All text in [square brackets] will need to be replaced with a directory.  
-  
+The following are the two commands you should need to use. All text in [square brackets] will need to be replaced with a directory.
+
 To train the model, use this command:
 ```python seeing_soundboard_main.py -t -d [data directory] -m [model directory]```
 
@@ -40,7 +40,7 @@ To use your trained model, use this command:
 
 ### Common Issues
 
-While trying to install requirements.txt, you might run into issues regarding mediapipe and tensorflow as those packages are no longer supported and therefore not available in the latests versions of python. This means that you will need to train and use the model using a version of python before 3.12. Python 3.10.4 and Python 3.11 where both used during testing to install requirements.txt with minimal issues.
+While trying to install requirements.txt, you might run into issues regarding mediapipe and tensorflow as those packages are no longer supported and therefore not available in the latests versions of python. This means that you will need to train and use the model using a version of python before 3.12. Python 3.10 and Python 3.11 where both used during testing to install requirements.txt with minimal issues.
 
 If you have a later version of python already installed on your computer, you can use a virtual environment to work on this project. We recommend using [Anaconda](https://www.anaconda.com/docs/getting-started/main) (if you don't already use it) to create the required venv because it already comes with recognized packages for certain versions of mediapipe and tensorflow.
 
@@ -67,12 +67,18 @@ This section will provide all the neccessary information to run the model on a R
 
 A prototype can be completed using the following:
 
-- [Rapberry Pi 3 Model B](https://www.raspberrypi.com/products/raspberry-pi-3-model-b/): You will also need to run a 64-bit OS in order to use mediapipe. Later raspberry pi models from the 4th and 5th generations and beyond should also have no problem running these files with improved performance.
+- [Rapberry Pi 3 Model B](https://www.raspberrypi.com/products/raspberry-pi-3-model-b/): You will also need to run a 64-bit OS in order to use mediapipe. Later raspberry pi models from the 4th and 5th generations and beyond are greatly recommended for improved performance. The Pi 3 *can* run this application, but I promise that it was done here because we had no other option.
 
 - [Raspberry Pi Camera Module 3](https://www.raspberrypi.com/products/camera-module-3/): This camera was chosen for its quality and compatibility with the Raspberry Pi. However, any camera module compatible with a raspberry pi or intergrated using other microcontrollers should work as well.
 
-- Since the Raspberry Pi 3 comes with a headphone jack socket, you can use almost any functional speaker.
+- Since the Raspberry Pi 3 comes with a headphone jack socket, you can use almost any functional speaker that meets your needs.
 
-- You will also need a housing or case for your raspberry pi that can accomodate for the camera and speakers. In the 'housing_files' folder, you'll find 3D printable files that will allow you make one of on your own.
+- You will also need a housing or case for your raspberry pi that can accomodate for the camera and some speakers. In the 'housing_files' folder, you'll find 3D printable files that will allow you make one of on your own.
 
-### Installation
+### Pi Requirements
+
+For this project, the Raspberry Pi only requires the files that allow you to use the model, so, after training the model, you can copy the following files to a new folder to then put onto a Pi along with this README: ```pi-requirements.txt, seeing_soundboard_main.py, play_audio.py, gesture_classification.py, gesture_recognizer.task```. You can also coppy the entire project repository to save time with reconfiguring the files. That's up to you, but you shouldn't need any of the other files to run this.
+
+### Testing Application
+
+You will need
