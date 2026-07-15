@@ -3,5 +3,5 @@ numpy
 opencv-python
 mediapipe
 python-vlc
-picamera2 # Must have the development headers for libcap installed for this to work.
+picamera2 # Must have the development headers for libcap installed for this to work. (Can be installed with 'sudo apt install libcap-dev')
 setuptools==69.5.1
