@@ -69,16 +69,16 @@ The prototype can be completed with the following parts:
 
 - A [Rapberry Pi 3 Model B](https://www.raspberrypi.com/products/raspberry-pi-3-model-b/) model or higher with its official power supply or adequate replacement. And in order to work with the libraries in this project, you will need to install a 64-bit OS like [Raspberry Pi's current 64-bit OS](https://www.raspberrypi.com/software/operating-systems/).
 
-- A [Raspberry Pi Camera Module 2](https://www.raspberrypi.com/products/camera-module-3/) or higher.
+- A [Raspberry Pi Camera Module 2](https://www.raspberrypi.com/products/camera-module-3/) or better.
 
 - Since the Raspberry Pi 3 comes with a headphone jack socket, you can use almost any functional speaker that meets your needs.
 
-- You will also need a housing or case for your raspberry pi that can accomodate for the camera and some speakers. In the 'housing_files' folder, you'll find 3D printable files that will allow you make one of on your own.
+- 3D printable files will also be included for you to use in this repo to build a housing for the device.
 
 ### Pi Requirements
 
 For this project, the Raspberry Pi only requires the files that allow you to use the model, so, after training the model, you can copy the following files to a new folder to then put onto a Pi along with this README: ```pi-requirements.txt, seeing_soundboard_main.py, play_audio.py, gesture_classification.py, gesture_recognizer.task```. You can also copy the entire project repository to save time with reconfiguring the files. That's up to you, but you shouldn't need any of the other files to run this.
 
-### Testing Application
+### Testing the Application
 
-You will need
+Before we make the soundboard, we'll need to configurate a  couple of things manually on the Pi first.
