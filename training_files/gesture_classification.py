@@ -35,7 +35,7 @@ class GestureClassifier():
     def setup_camera(self):
         if USE_PICAMERA:
             cam = Picamera2()
-            config = cam.create_preview_configuration(main={"format": "RGB888"})
+            config = cam.create_preview_configuration(main={"format": "RGB888","size": (640, 480)})
             cam.configure(config)
             cam.start()
             return cam

@@ -65,11 +65,11 @@ This section will provide all the neccessary information to run the model on a R
 
 ### Parts List
 
-A prototype can be completed using the following:
+The prototype can be completed with the following parts:
 
-- [Rapberry Pi 3 Model B](https://www.raspberrypi.com/products/raspberry-pi-3-model-b/): You will also need to run a 64-bit OS in order to use mediapipe. Later raspberry pi models from the 4th and 5th generations and beyond are greatly recommended for improved performance. The Pi 3 *can* run this application, but I promise that it was done here because we had no other option.
+- A [Rapberry Pi 3 Model B](https://www.raspberrypi.com/products/raspberry-pi-3-model-b/) model or higher with its official power supply or adequate replacement. And in order to work with the libraries in this project, you will need to install a 64-bit OS like [Raspberry Pi's current 64-bit OS](https://www.raspberrypi.com/software/operating-systems/).
 
-- [Raspberry Pi Camera Module 3](https://www.raspberrypi.com/products/camera-module-3/): This camera was chosen for its quality and compatibility with the Raspberry Pi. However, any camera module compatible with a raspberry pi or intergrated using other microcontrollers should work as well.
+- A [Raspberry Pi Camera Module 2](https://www.raspberrypi.com/products/camera-module-3/) or higher.
 
 - Since the Raspberry Pi 3 comes with a headphone jack socket, you can use almost any functional speaker that meets your needs.
 
@@ -77,7 +77,7 @@ A prototype can be completed using the following:
 
 ### Pi Requirements
 
-For this project, the Raspberry Pi only requires the files that allow you to use the model, so, after training the model, you can copy the following files to a new folder to then put onto a Pi along with this README: ```pi-requirements.txt, seeing_soundboard_main.py, play_audio.py, gesture_classification.py, gesture_recognizer.task```. You can also coppy the entire project repository to save time with reconfiguring the files. That's up to you, but you shouldn't need any of the other files to run this.
+For this project, the Raspberry Pi only requires the files that allow you to use the model, so, after training the model, you can copy the following files to a new folder to then put onto a Pi along with this README: ```pi-requirements.txt, seeing_soundboard_main.py, play_audio.py, gesture_classification.py, gesture_recognizer.task```. You can also copy the entire project repository to save time with reconfiguring the files. That's up to you, but you shouldn't need any of the other files to run this.
 
 ### Testing Application
 
