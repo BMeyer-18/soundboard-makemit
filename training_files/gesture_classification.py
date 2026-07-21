@@ -1,25 +1,47 @@
-"""
-Importing necessary modules:
-- mediapipe: the runtime module for handling media processing
-- time: used to track the duration of the video capture
-- picamera2 (Pi) or cv2 (dev machine): camera capture, chosen automatically based on what's available
-"""
-
 from unittest import result
-
+import time
+import os
+import socket
+import struct
+import numpy as np
 from play_audio import PlayAudio
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-import time
 
-try:
-    from picamera2 import Picamera2
-    USE_PICAMERA = True
-except ImportError:
+SOCK_PATH = "/tmp/soundboard_camera.sock"
+
+class CameraSocketClient:
+    """Connects to camera_server.py (system Python process) and requests frames."""
+
+    def __init__(self, sock_path=SOCK_PATH):
+        self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.sock.connect(sock_path)
+
+    def get_frame(self):
+        self.sock.sendall(b"F")
+        header = self._recv_exact(12)
+        w, h, length = struct.unpack("!III", header)
+        data = self._recv_exact(length)
+        return np.frombuffer(data, dtype=np.uint8).reshape((h, w, 3))
+
+    def _recv_exact(self, n):
+        buf = b""
+        while len(buf) < n:
+            chunk = self.sock.recv(n - len(buf))
+            if not chunk:
+                raise ConnectionError("Camera server disconnected")
+            buf += chunk
+        return buf
+
+    def close(self):
+        self.sock.close()
+
+# Decide capture method and falls back to OpenCV dev machine, where camera_server.py
+# isn't running and there's a normal USB webcam instead.
+USE_SOCKET_CAMERA = os.path.exists(SOCK_PATH)
+if not USE_SOCKET_CAMERA:
     import cv2
-    USE_PICAMERA = False
-
 
 class GestureClassifier():
     model_path = ""
@@ -33,18 +55,17 @@ class GestureClassifier():
         self.vision_running_mode = mp.tasks.vision.RunningMode
 
     def setup_camera(self):
-        if USE_PICAMERA:
-            cam = Picamera2()
-            config = cam.create_preview_configuration(main={"format": "RGB888","size": (640, 480)})
-            cam.configure(config)
-            cam.start()
-            return cam
+        if USE_SOCKET_CAMERA:
+            return CameraSocketClient()
         else:
             return cv2.VideoCapture(0)
-        
+
     def capture_frame(self, cam):
-        if USE_PICAMERA:
-            return cam.capture_array()
+        if USE_SOCKET_CAMERA:
+            try:
+                return cam.get_frame()
+            except ConnectionError:
+                return None
         else:
             ret, frame = cam.read()
             if not ret:
@@ -52,8 +73,8 @@ class GestureClassifier():
             return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     def release_camera(self, cam):
-        if USE_PICAMERA:
-            cam.stop()
+        if USE_SOCKET_CAMERA:
+            cam.close()
         else:
             cam.release()
 
@@ -82,8 +103,6 @@ class GestureClassifier():
         last_gesture = None
         with self.gesture_recognizer.create_from_options(options) as recognizer:
             cam = self.setup_camera()
-
-            # begin video capture
             print("beginning video capture")
             start_time = time.time()
             while time.time() - start_time < duration:
