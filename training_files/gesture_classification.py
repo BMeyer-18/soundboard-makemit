@@ -8,12 +8,8 @@ from play_audio import PlayAudio
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-from PIL import Image # for debugging purposes, to save frames as images for testing
 
 SOCK_PATH = "/tmp/soundboard_camera.sock"
-
-frame = self.capture_frame(cam)
-Image.fromarray(frame).save("/tmp/debug_frame.jpg")
 
 class CameraSocketClient:
     """Connects to camera_server.py (system Python process) and requests frames."""
@@ -88,6 +84,10 @@ class GestureClassifier():
         if frame is None:
             print("failed to capture image")
             return
+        # --- TEMPORARY DEBUG; to save frames as images for testing ---
+        from PIL import Image
+        Image.fromarray(frame).save("/tmp/debug_frame.jpg")
+        # -------------------------------------------------------------
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
         gesture_recognition_result = recognizer.recognize(mp_image)
         classification = gesture_recognition_result.gestures
@@ -115,3 +115,4 @@ class GestureClassifier():
                     last_gesture = result
             self.release_camera(cam)
         return last_gesture
+    
