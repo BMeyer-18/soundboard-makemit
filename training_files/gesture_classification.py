@@ -8,10 +8,10 @@ from play_audio import PlayAudio
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
+from PIL import Image # for debugging purposes, to save frames as images for testing
 
 SOCK_PATH = "/tmp/soundboard_camera.sock"
-from PIL import Image
-...
+
 frame = self.capture_frame(cam)
 Image.fromarray(frame).save("/tmp/debug_frame.jpg")
 
@@ -41,10 +41,7 @@ class CameraSocketClient:
     def close(self):
         self.sock.close()
 
-# Decide capture methofrom PIL import Image
-...
-frame = self.capture_frame(cam)
-Image.fromarray(frame).save("/tmp/debug_frame.jpg")d and falls back to OpenCV dev machine, where camera_server.py
+# Decide capture method and falls back to OpenCV dev machine, where camera_server.py
 # isn't running and there's a normal USB webcam instead.
 USE_SOCKET_CAMERA = os.path.exists(SOCK_PATH)
 if not USE_SOCKET_CAMERA:
