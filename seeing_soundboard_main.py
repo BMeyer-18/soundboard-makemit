@@ -38,11 +38,11 @@ def use(args):
 
     while True:
         last_gesture = classifier.classify_live_footage(2)
-        # if last_gesture is None:
-        #     print("Camera/frame error during capture window, shutting down...")
-        #     sys.exit(0)
+        if last_gesture is None:
+            print("Camera/frame error during capture window, shutting down...")
+            sys.exit(0)
             # Shuts off program when no frame is captured or error occurs. Maybe revisit this logic.
-        if last_gesture == "none":
+        elif last_gesture == "none":
             print("No hand gesture detected. restarting process...")
             continue
             # Restart the capture window when no gesture is detected
