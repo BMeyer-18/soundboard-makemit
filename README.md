@@ -69,9 +69,9 @@ The prototype can be completed with the following parts:
 
 - A [Rapberry Pi 3 Model B](https://www.raspberrypi.com/products/raspberry-pi-3-model-b/) model or higher with its official power supply or adequate replacement. And in order to work with the libraries in this project, you will need to install a 64-bit OS like [Raspberry Pi's current 64-bit OS](https://www.raspberrypi.com/software/operating-systems/).
 
-- A [Raspberry Pi Camera Module 2](https://www.raspberrypi.com/products/camera-module-3/) or better.
+- A [Raspberry Pi Camera Module 2](https://www.raspberrypi.com/products/camera-module-3/) or better. You could also connect the Raspberry Pi to a USB webcam instead.
 
-- Since the Raspberry Pi 3 comes with a headphone jack socket, you can use almost any functional speaker that meets your needs.
+- Since the Raspberry Pi 3 comes with a headphone jack socket, you can use almost any functional speaker that meets your needs. Speakers that use the Pi's GPIO pinout may require an additional layer of intergration that may not be coverted in the scope of this project.
 
 - 3D printable files will also be included for you to use in this repo to build a housing for the device.
 

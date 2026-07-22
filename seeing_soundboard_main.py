@@ -37,7 +37,7 @@ def use(args):
     classifier = GestureClassifier(args.model_path, 0.3)
 
     while True:
-        last_gesture = classifier.classify_live_footage(2)
+        last_gesture = classifier.classify_live_footage(5)
         if last_gesture is None:
             print("Camera/frame error during capture window, shutting down...")
             sys.exit(0)
