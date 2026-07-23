@@ -39,7 +39,7 @@ def main():
                             break  # client disconnected
                         if request == b"F":
                             frame = cam.capture_array()  # numpy array, H x W x 3
-                            # frame = frame[:, :, ::-1]  # BGR -> RGB
+                            frame = frame[:, :, ::-1]  # BGR -> RGB
                             h, w = frame.shape[0], frame.shape[1]
                             data = frame.tobytes()
                             header = struct.pack("!III", w, h, len(data))
