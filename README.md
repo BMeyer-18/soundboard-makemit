@@ -138,6 +138,7 @@ With both environments installed, start the camera server first (this must run u
 Then, in the second terminal,run the gesture classification process under pyenv's 3.11:
 
     cd ~/soundboard-makemit
+    pyenv local 3.11
     python seeing_soundboard_main.py -u -m training_files/model/gesture_recognizer.task
 
 If everything is wired up correctly, you should see frames flowing from the camera server into the classification process, and MediaPipe should begin returning gesture predictions as you make hand gestures in front of the camera. Additionally, `gesture_classification.py` should now provide a 'debugging frame' showing you what the last image captured using `libcamera`. If you're using an OS with a physical desktop environment, you can see what image is being outputed by navigating to your /tmp folder and opening `debug_frame.jpg` for a 'live footage view' of the program running.
