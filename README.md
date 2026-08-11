@@ -85,9 +85,10 @@ Before we make the soundboard, we'll need to configurate a couple of things manu
 
 Assuming configurating your raspberrypi went smoothly, you will need to be able to use both system python (most likely python 3.13 or higher) and an older version of python (3.10 - 3.12) using some python version mmanagement process like pyenv.
 
-First, locate the 'soundboard-makemit' repository and head inside. To download pyenv, run:
+First, locate the 'soundboard-makemit' repository and head inside. To download pyenv, run one of the following:
 
     curl https://pyenv.run | bash
+    sudo apt install pyenv
 
 Then add pyenv to your shell startup file (`~/.bashrc` on Raspberry Pi OS) so it's available in every terminal session:
 
@@ -119,12 +120,15 @@ Because of this, one process can't do both jobs. The solution used here is to sp
 Install the camera-facing packages system-wide, using `apt` rather than `pip` so you get versions already linked against the Pi's camera stack:
 
     sudo apt install libcap-dev
-    
+    sudo apt install libcamera-dev
+
 Then install the gesture-recognition dependencies inside the pyenv-managed 3.11 environment (make sure you're still inside the repo folder so pyenv has switched versions) using either commands:
 
     pip install -r pi-requirements.txt
     pip install mediapipe python-vlc opencv-python-headless numpy
 
+> **Important:**
+>
 > Don't use `sudo` when installing or running anything meant for the pyenv environment.
 
 ### Running the setup
@@ -144,3 +148,95 @@ Then, in the second terminal,run the gesture classification process under pyenv'
 If everything is wired up correctly, you should see frames flowing from the camera server into the classification process, and MediaPipe should begin returning gesture predictions as you make hand gestures in front of the camera. Additionally, `gesture_classification.py` should now provide a 'debugging frame' showing you what the last image captured using `libcamera`. If you're using an OS with a physical desktop environment, you can see what image is being outputed by navigating to your /tmp folder and opening `debug_frame.jpg` for a 'live footage view' of the program running.
 
 ### Running automatically on boot using systemd
+
+Now that we've been able to manually run the program, we're going to wirte two `systemd` services to have them run automatically on boot.
+
+For the camera server process, create a unit file in the following directory: `/etc/systemd/system/soundboard-camera.service` (replace `pi` below with your own username, and adjust the path if your repo lives somewhere else):
+
+    [Unit]
+    Description=Soundboard Camera Server
+ 
+    [Service]
+    WorkingDirectory=/home/pi/soundboard-makemit
+    ExecStart=/usr/bin/python3 /home/pi/soundboard-makemit/pi_camera_server.py
+    Restart=on-failure
+    User=pi
+ 
+    [Install]
+    WantedBy=multi-user.target
+
+And a second unit file for the gesture classification process, e.g. `/etc/systemd/system/soundboard-gestures.service`:
+
+    [Unit]
+    Description=Soundboard Gesture Classification
+    After=soundboard-camera.service
+    Requires=soundboard-camera.service
+ 
+    [Service]
+    WorkingDirectory=/home/pi/soundboard-makemit
+    Environment=XDG_RUNTIME_DIR=/run/user/1000
+    ExecStartPre=/bin/bash -c 'for i in {1..30}; do [ -S /tmp/soundboard_camera.sock ] && exit 0; sleep 1; done; echo "camera socket never appeared" >&2; exit 1'
+    ExecStart=/home/pi/.pyenv/versions/3.11.11/bin/python /home/pi/soundboard-makemit/seeing_soundboard_main.py -u -m /home/pi/soundboard-makemit/training_files/model/gesture_recognizer.task
+    Restart=on-failure
+    User=pi
+ 
+    [Install]
+    WantedBy=multi-user.target
+
+> **Things to keep in mind:**
+>
+> - `ExecStart` must point to the **absolute path** of the pyenv-installed interpreter (as shown above), not just `python` or a pyenv shim.
+> - `WorkingDirectory` is important because `play_audio.py` references sound files with relative paths. Without it, systemd defaults the working directory to `/`, and VLC will fail to find any sound file. Instead of having to move files around, this bypasses the porblem entirely.
+> - `Environment=XDG_RUNTIME_DIR=/run/user/1000` is needed for VLC to reach the PulseAudio session belonging to your user. Without it you'll see `PulseAudio server connection failure: Connection refused` in the logs even though the audio itself is configured correctly. Swap `1000` for the actual UID via `id -u pi` (where 'pi' is the current user) if it differs.
+> - `ExecStartPre` polls for `/tmp/soundboard_camera.sock` before launching the gesture process. `pi_camera_server.py` only creates that socket once `Picamera2()` has actually finished initializing, so this avoids a race on boot where the gesture service starts before the camera hardware is ready. `Requires=`/`After=soundboard-camera.service` alone only guarantees the *unit* was started, not that the camera itself finished initializing.
+
+After you've created your .service files, enable and start both services with:
+
+    sudo systemctl daemon-reload
+    sudo systemctl enable soundboard-camera.service soundboard-gestures.service
+    sudo systemctl start soundboard-camera.service soundboard-gestures.service
+
+You can check on either service's status and logs at any time with:
+
+    sudo systemctl status soundboard-gestures.service
+    journalctl -u soundboard-gestures.service -f
+
+### Troubleshooting on the Pi
+
+- **`RuntimeError: Failed to acquire camera: Device or resource busy`** — Something else already has the camera open, most commonly `soundboard-camera.service` still running in the background while you're trying to launch `pi_camera_server.py` by hand. Run `sudo systemctl stop soundboard-camera.service` before testing manually, and start it again (or reboot) once you're done. `sudo lsof /dev/video0 /dev/media0 /dev/media1` should show you any other leftover process holding the camera.
+- **No sound plays, but gesture detection works fine** — Check `journalctl -u soundboard-gestures.service -f` while triggering a gesture. A `PulseAudio server connection failure` error means the service is missing `Environment=XDG_RUNTIME_DIR`; a `cannot open file` / `unable to open the MRL` error pointing at a path starting from `/` (e.g. `/sound_files/...` instead of `/home/pi/soundboard-makemit/sound_files/...`) means the service is missing `WorkingDirectory`. Both are included in the unit files above.
+- **`soundboard-gestures.service` shows `inactive (dead)` after a reboot, with no log entries at all for that boot** — This means systemd never even attempted to start the unit, as opposed to the process starting and crashing. Run `journalctl -b --no-pager | grep -i "ordering cycle"`. If you see `Found ordering cycle on soundboard-gestures.service/start` / `Job ... deleted to break ordering cycle`, check `soundboard-camera.service` for an `After=multi-user.target` line in its `[Unit]` section and remove it — see the note above about ordering cycles. Confirm the fix with `systemctl show soundboard-gestures.service -p ExecMainStartTimestamp`; a populated timestamp after the next reboot means it actually launched.
+- **Logs from a previous boot aren't showing up in `journalctl`** — On minimal Pi OS images, `systemd-journald` often runs in volatile mode, keeping logs only in RAM (`/run/log/journal`), which get wiped on every reboot. Run `journalctl --list-boots` to confirm; if only one boot is listed, make logs persistent with:
+      sudo mkdir -p /var/log/journal
+      sudo systemd-tmpfiles --create --prefix /var/log/journal
+      sudo systemctl restart systemd-journald
+
+After this, `journalctl -u <service> -b -1` will let you inspect the previous boot's logs, not just the current one.
+
+## Housing for the device
+
+This section is all about documenting the physical housing case(s) made to encase the electronic. There are two main ideas for what the soundboard could look like: the 'box' which sits on your desk or elswhere and the 'necklace' which would be smaller and portable enough to potentially be worn like an necklace, other accessory, or fit in one's pocket like a phone or wallet.
+
+When this project was being conceived, it was decided that the "visual soundboard" could be used for entertainment and accessibility purposes. Both the box and mobile/portable cases are supposed to help the hardware in completing one of those goals.
+
+Any designs for either of these case styles can be found under the `housing_files` folder of this directory and should be available .stl or .3mf files for 3D printing.
+
+### Soundbox
+
+*Insert pictures and captions of latest version here (guys I don't own a 3d printer my build's at the library rn)
+
+## Final-ish thoughts / Next steps
+
+As of now, the hardware and infrastructure side of this project is in a working state end-to-end: the camera and gesture-classification processes run as separate Python interpreters communicating over a Unix socket, both launch automatically on boot via `systemd`, audio plays correctly through the audio jack speaker, and the various boot-ordering and permission issues that came up along the way (camera contention, missing `WorkingDirectory`/`XDG_RUNTIME_DIR`, the ordering-cycle bug) are documented above so that they can be promptly fixed if you run into any of those issues.
+
+However, there is still work on the software/model and the hardware/infrastructure side that'd I'd like to work on:
+
+- **Loop logic in `seeing_soundboard_main.py`.** Right now, when a captured frame doesn't produce a recognized image (blurded, no lighting, etc), the program shuts down rather than continuing to listen. This needs to change so the main loop runs indefinitely — treating "no gesture recognized" as a normal, expected outcome to just try again on (The specific message is "Camera/frame error during capture window, shutting down...", which is different from when mediapipe recognizes an image as 'none' in which case nothing happens and the program restarts). Working on this loop is the main next step.
+
+- **Continued model training.** Feeding the gesture recognizer more training images (beyond the pre-built model's coverage) should reduce how often frames go unrecognized in the first place, complementing the loop fix rather than replacing it. Both together should get the device closer to a genuinely "always listening" soundboard rather than one that needs to be manually restarted.
+
+- **Normalize audio files.** Currently, the audio files used in this project are pulled from different places online, meaning that they don't all have the same noise level. One of the sound bytes, "i-love-you.mp3," is significantly quiter than most of the other sounds. This can be fixed by using an audio processing software like audacity.
+
+- **Provide more gestures.** Anyone is able to use the code provided and add their own sound bytes and train their own simple gesture recognition model to recognize any image or hand gesture, but I still think that it would be nice for the base project to have a lot more recognizable gestures.
+
+- **Work on hardware intergration.** Finally, this *is* a hardware-based project at the end of the day. In order to really be completed, the main system should be fully self-reliant. I'd like to add a battery to the raspberry pi so that it doesn't have to be plugged in an adapter, an on/off and reset button, an intergraintergrated speaker module that is powered by the pi itself and can be transported with the rest of the deive (simular to how the camera module removes the need of a usb webcam, these speaker should preferably be small enough to rely on the GPIO pins).
