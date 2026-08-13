@@ -221,10 +221,6 @@ When this project was being conceived, it was decided that the "visual soundboar
 
 Any designs for either of these case styles can be found under the `housing_files` folder of this directory and should be available .stl or .3mf files for 3D printing.
 
-### Soundbox
-
-*Insert pictures and captions of latest version here (guys I don't own a 3d printer my build's at the library rn)
-
 ## Final-ish thoughts / Next steps
 
 As of now, the hardware and infrastructure side of this project is in a working state end-to-end: the camera and gesture-classification processes run as separate Python interpreters communicating over a Unix socket, both launch automatically on boot via `systemd`, audio plays correctly through the audio jack speaker, and the various boot-ordering and permission issues that came up along the way (camera contention, missing `WorkingDirectory`/`XDG_RUNTIME_DIR`, the ordering-cycle bug) are documented above so that they can be promptly fixed if you run into any of those issues.
