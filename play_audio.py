@@ -6,6 +6,7 @@ Importing necessary modules:
 from vlc import MediaPlayer
 from time import sleep
 
+
 class PlayAudio:
 
     def __init__(self):

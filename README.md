@@ -7,6 +7,13 @@ This was a project for the 2025 MakeMIT Hackathon that converts hand gestures in
 ## Data Setup
 
 > If you don't want to gather a dataset of your own, you can skip the data setup and follow along using the files in the 'model_files' folder to get started. The recognized hand gestures are thumbs up, thumbs down, fist, peace sign, ok sign, and the ASL 'I love you' sign.
+# Hand Gesture Soundboard  
+
+## Overview
+
+This was a project for the 2025 MakeMIT Hackathon that converts hand gestures into sounds. This code allows you to train and use your own model, as long as you have a dataset of images to train the model on. This uses MediaPipe Model Maker, which requires some outdated versions of Python libraries all listed in `requirements.txt`.  
+
+## Data Setup  
 
 To train the model, Mediapipe Model Maker requires you to set up your training directory in a specific way. You don't need to create a test/train/val split - that's done for you. All you need to do is create one folder for each of your hand gesture categories, and fill each folder with pictures of that hand gesture in use. You can include as few or as many as you want, but your data directory must only contain folders, each of which contains images of a specific hand gesture.
 
@@ -236,3 +243,17 @@ However, there is still work on the software/model and the hardware/infrastructu
 - **Provide more gestures.** Anyone is able to use the code provided and add their own sound bytes and train their own simple gesture recognition model to recognize any image or hand gesture, but I still think that it would be nice for the base project to have a lot more recognizable gestures.
 
 - **Work on hardware intergration.** Finally, this *is* a hardware-based project at the end of the day. In order to really be completed, the main system should be fully self-reliant. I'd like to add a battery to the raspberry pi so that it doesn't have to be plugged in an adapter, an on/off and reset button, an intergraintergrated speaker module that is powered by the pi itself and can be transported with the rest of the deive (simular to how the camera module removes the need of a usb webcam, these speaker should preferably be small enough to rely on the GPIO pins).
+> Note that images used for training can only be in the .jpg or .png format.
+
+To change the sounds that play, you'll need to change some code in `play_audio.py`. The detailed instructions along with a functional example can all be found there, but as a brief overview: You'll need to pair the name of each hand gesture with the directory of the corresponding sound effect, as well as its approximate length in seconds.
+
+## Commands  
+
+The argparser Python library is used to allow all your work training and using the model to be done in the terminal, with the exception of changing the sounds in `play_audio.py`. This has only been tested on Ubuntu so far.  
+The following are the two commands you should need to use. All text in [square brackets] will need to be replaced with a directory.  
+  
+To train the model, use this command:
+```python seeing_soundboard_main.py --train --data-path [data directory] --model-path [directory where trained model will be saved]``` **OR** ```python seeing_soundboard_main.py -t -d [data directory] -m [model directory]```
+
+To use your trained model, use this command:  
+```python seeing_soundboard_main.py --use --model-path [path to trained model, which should be a .task file]``` **OR** ```python seeing_soundboard_main.py --use -m [model path]```
