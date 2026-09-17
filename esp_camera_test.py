@@ -1,3 +1,8 @@
+"""
+Old camera test file to verify the camera is working. Kill the terminal to stop the stream.
+This file isn't needed in the final application.
+"""
+
 import cv2
 
 #url = "http://Nook Rats:NookRats!@10.42.0.124"
@@ -10,10 +15,10 @@ while True:
         print('failure')
         break
     print('showing stream')
-    cv2.imshow("ESP32 Stream", frame)
+    cv2.imshow("Stream", frame)
     if cv2.waitKey(1) == 27:
         break
 
 cap.release()
-cv2.destroyAllWindows
+cv2.destroyAllWindows()
 print('done')

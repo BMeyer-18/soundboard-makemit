@@ -1,3 +1,10 @@
+"""
+Import necessary modules:
+- os: allows python to interact with the file system operations
+- tensorflow: for building and training the model
+- mediapipe_model_maker: for creating the gesture recognizer
+- matplotlib: for plotting training metrics
+"""
 import os
 import tensorflow as tf
 from mediapipe_model_maker import gesture_recognizer
